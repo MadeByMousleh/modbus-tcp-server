@@ -1,18 +1,15 @@
 let net = require('net');
 const EventEmitter = require('node:events');
 
+class ModbusTcpServer {
 
-
-
-class ModbusTcpServer{
-    
     port;
     ipAddress;
     tcpServer
 
     eventEmitter = new EventEmitter();
-    constructor(port, ipAddress)
-    {
+
+    constructor(port, ipAddress) {
         this.port = port;
         this.ipAddress = ipAddress;
         this.tcpServer = net.createServer((socket) => {
@@ -23,26 +20,31 @@ class ModbusTcpServer{
                 this.eventEmitter.emit('msg', data);
             })
 
-            
             this.eventEmitter.on('write', (data) => {
-                socket.write(`Send from server:${data} \r\n`);
-              });
+                socket.write(data);
+            });
+
+            socket.on('close', function () {
+                console.log(`${socket.remoteAddress}:${socket.remotePort} Connection closed`);
+            });
+
+            socket.on('error', function () {
+                console.log(`${socket.remoteAddress}:${socket.remotePort} Connection Error `);
+            });
 
         })
     }
 
-    listen()
-    {
+    listen() {
         this.tcpServer.listen(this.port, this.ipAddress);
         console.log(`Listening on port ${this.port} and ip ${this.ipAddress}`)
     }
 
-    write(data)
-    {
+    write(data) {
         this.eventEmitter.emit('write', data);
     }
 
-    onMessage(cb){
+    onMessage(cb) {
         this.eventEmitter.on('msg', data => {
             cb(data)
         })

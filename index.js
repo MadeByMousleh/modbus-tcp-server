@@ -1,18 +1,7 @@
+const { read } = require("fs");
 const ModbusTcpResponse = require("./ModbusTcpResponse");
 const ModbusTcpServer = require("./ModbusTcpServer");
-
-let coils = [
-    1,0,1,0,1,1,1,1,1,0,
-    1,0,1,0,1,1,1,1,1,0,
-    1,0,1,0,1,1,1,1,1,0,
-    1,0,1,0,1,1,1,1,1,0,
-    1,0,1,0,1,1,1,1,1,0,
-    1,0,1,0,1,1,1,1,1,0,
-    1,0,1,0,1,1,1,1,1,0,
-    1,0,1,0,1,1,1,1,1,0,
-    1,0,1,0,1,1,1,1,1,0,
-    1,0,1,0,1,1,1,1,1,0,
-];
+const ModbusTcpReadRequest = require("./ModbusTcpReadRequest");
 
 
 let modbusServer = new ModbusTcpServer(502,'127.0.0.1');
@@ -24,9 +13,23 @@ modbusServer.listen();
 
 modbusServer.onMessage(data => {
 
-    let response = new ModbusTcpResponse(data);
+    let request = new ModbusTcpReadRequest(data);
 
-    console.log(response.data);
-    console.log(data, 'AGAIN AGAIN')
+
+    let response = new ModbusTcpResponse(request);
+
+   response.create(response => {
+
+    console.log(response, 'response');
+
+        modbusServer.write(response);
+    })
+    // modbusServer.write(response.createInputRegisterResponse())
+
+    // let startAddress = response.data.readInt16BE(0);
+    // let count = response.data.readInt16BE(2);
+
+    // Get data;
+
+    // response.printResponseInformation();
 })
-
