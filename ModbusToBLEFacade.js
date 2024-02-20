@@ -15,7 +15,7 @@ class ModbusToBLEFacade {
     dataEmitter = new EventEmitter();
     replyName = 'reply';
 
-    eventSourceUrl = 'http://192.168.0.29/gatt/nodes?event=1';
+    eventSourceUrl = `${process.env.HOST}/gatt/nodes?event=1`;
 
 
     constructor(hostname, port, gatewayMac) {
@@ -105,7 +105,7 @@ class ModbusToBLEFacade {
 
             const loginTelegram = new LoginTelegram().create();
 
-            let loginResult = await axios(`http://192.168.0.29/gatt/nodes/${mac}/handle/19/value/${loginTelegram}?noresponse=1`);
+            let loginResult = await axios(`${process.env.HOST}/gatt/nodes/${mac}/handle/19/value/${loginTelegram}?noresponse=1`);
 
             if (loginResult.status === 200) {
 
@@ -203,7 +203,7 @@ class ModbusToBLEFacade {
 
         const getUserConfigTelegram = new GetUserConfigTelegram().create();
 
-        let userConfigReq = await axios(`http://192.168.0.29/gatt/nodes/${mac}/handle/19/value/${getUserConfigTelegram}?noresponse=1`, {
+        let userConfigReq = await axios(`${process.env.HOST}/gatt/nodes/${mac}/handle/19/value/${getUserConfigTelegram}?noresponse=1`, {
             method: 'GET'
         })
 

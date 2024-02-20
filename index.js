@@ -4,7 +4,7 @@ const ModbusTcpServer = require("./ModbusTcpServer");
 const ModbusTcpReadRequest = require("./ModbusTcpReadRequest");
 
 
-let modbusServer = new ModbusTcpServer(502,'127.0.0.1');
+let modbusServer = new ModbusTcpServer(502,'0.0.0.0');
 
 let tcpServer = modbusServer.tcpServer;
 
